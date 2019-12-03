@@ -1,0 +1,132 @@
+\documentclass[11pt]{article}
+
+\usepackage{times,graphicx,epstopdf,fancyhdr,amsfonts,amsthm,amsmath,url,xspace}
+\usepackage[left=.75in,top=.75in,right=.75in,bottom=.75in]{geometry}
+
+\textwidth 7in
+\textheight 9.5in
+
+\pagestyle{fancy}
+
+\lhead{CS 356T}
+\rhead{Fall 2019}
+\chead{Week 10:  The Metric Traveling Salesperson Problem}
+\cfoot{\thepage}
+\renewcommand{\footrulewidth}{0.4pt}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{question}{Question}
+\newtheorem{problem}{Problem}
+\newtheorem{remark}{Remark}
+\newtheorem{reading}{Reading}
+
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\TSP}{{\sc Tsp}\xspace}
+
+\begin{document}
+
+\section{The Traveling Salesperson Problem} \label{sec:tsp}
+
+The {\sc Traveling Salesperson Problems} asks, given a complete, directed graph with real-valued edge lengths, what is the minimum length cycle that visits every node exactly once?  This classic computer science problem is NP-hard.  It is the problem most computer scientists reach to when explaining hardness to non-computer scientists since it is easy to motivate with stories of UPS drivers. 
+
+ In its most general version, \TSP is very hard to approximate.  In fact, one can show it is hard to approximate up to any arbitrary factor.  This is because \TSP is a generalization of {\sc Hamiltonian Cycle} and since one can view the lack of edge in the {\sc Hamiltonian Cycle} graph as an edge of length $\infty$ in the corresponding \TSP graph, there is an arbitrarily large gap between instances where there is a Hamiltonian cycle (optimal is length $n$ in the \TSP) and there is no Hamiltonian cycle (optimal has length $\infty$ in the \TSP).  Notice here that {\em any} polynomial-time approximation algorithm would be able to detect this difference! 
+
+\subsection{Metric \TSP} \label{sec:metric}
+
+Because generalized \TSP is very hard to approximate, and because most real-world instances of \TSP have more structure, we often restrict our attention to subclasses of the problem.  One popular subclass is {\sc Metric \TSP}.  The metric version assumes the graph can be embedded in some metric space.  This just means that
+
+\begin{itemize}
+	\item the distances between nodes are symmetric (so the graph is essentially undirected),
+	\item the edge-lengths are positive, although the distance between any node and itself is always 0, 
+	\item and the triangle inequality holds.
+\end{itemize}
+
+\noindent The metric version of \TSP has an easy 2-approximation:
+
+\begin{enumerate}
+	\item Fnd a minimum spanning tree for the graph.  The cost of the minimum spanning tree is a natural lower bound on the minimum length tour.
+	\item Trace the edges of the tree.  This yields a sequence of nodes $v=v_{1}, \ldots, v_{2n-2}$ where $v_{2n-2}=v_{1}$.  Notice this path has length at most twice the length of the minimum spanning tree.  Hence it has length at most twice the cost of the minimum length tour.
+	\item Remove any node from $v$ if it appears earlier in the sequence.  This yields a well-formed tour.  Furthermore, the cost could not have increased since the triangle-inequality holds.
+\end{enumerate}
+Christofides developed a 3/2-approximation that essentially throws the kitchen sink at the problem:
+\begin{enumerate}
+	\item Find a minimum spanning tree $T$ for the graph $G$.  Note that every tree has an even number of odd-degree nodes.
+	\item Consider the complete subgraph of $G$ over all the odd-degree nodes from $T$.  Find a minimum weight perfect matching $M$ on this graph.
+	\item Combine the matching and the spanning tree to form a multigraph\footnote{Edges that appear in both
+	the matching and the MST appear twice now.} $H$.
+	\item Every node in $H$ has even-degree, so, by definition, it has an Euler tour.  Call the tour $v=v_{1}, \ldots, v_{t}$.
+	\item The cost of $v$ is at most the cost of $T$ and the cost of $M$.  We know the cost of $T$ is a lower bound on the cost of the optimal tour.  What about $M$?
+	\item Since one can think of the optimal tour on $G$ as two {\em interleaved} perfect matchings, a minimum cost perfect matching  is at most half the cost of the optimal tour.
+	\item Thus, $v$ is a factor of 3/2 larger than the optimal \TSP tour.  Removing the redundant vertices from $v$ (as we did with the trace of the MST before) leaves us with a valid \TSP tour.  
+\end{enumerate}
+
+Christofides' algorithm is the best known for metric \TSP\footnote{And is beautiful!}.  There is no PTAS for metric \TSP (unless P=NP) but there is still a gap between the upper and lower bounds of the approximation ratio.  
+
+\subsection{Euclidean \TSP}
+
+Euclidean \TSP is the \TSP problem where the nodes are points in the $d$-dimensional Euclidean plane.  The distance between any pair of points is their Euclidean distance.  Since Euclidean space is a metric space, we know that Euclidean \TSP has a 3/2 approximation.  However, the lower bounds do not necessarily hold.  Sanjeev Arora thought that they might hold, so he set about proving that Euclidean \TSP does not have a PTAS.  Surprisingly, the pursuit of this negative result, led him to a positive result:  a polynomial-time approximation scheme for Euclidean \TSP.  The algorithm involves recursively decomposing the Euclidean space into quadrants until each quadrant contains only one point.  Then a combination of dynamic programming and rounding yields the solution.  Arora's original algorithm ran in time $n^{O(1/\epsilon)}$ in two-dimensions.  One year later, he developed an algorithm running in time $n(\log n)^{O(1/\epsilon)}$.  We will read the journal version of (essentially) the second paper.
+
+\section{Reading}
+
+Begin by reading
+
+\begin{itemize}
+	\item [] {\em Polynomial Time Approximation Schemes for Euclidean Traveling Salesman and other Geometric Problems.  Sanjeev Arora.  Journal of the ACM.  45:5.  1998.  753--782}
+\end{itemize}
+
+\noindent You should feel free to skip section 3.  Don't worry if you don't follow everything right away---there are many great lecture notes available on this topic.  They will help fill in the gaps.  I have notes from both Shuchi Chawla's course at Wisconsin and Michel Goemans' course at MIT linked on the website.  Shuchi's notes follow the journal version a little more, but Goemans' notes are better written.  In addition, there is a detailed set of slides on the website.
+
+\section{Questions}
+
+Several of this week's questions require a little research.  Use whatever you can get your hands on, but don't regurgitate what you read directly --- explain everything in your own words.  Also, make sure to properly cite your sources. 
+
+\begin{question}
+Where do we use the metric space assumptions in the 2- and 3/2-approximations given above?
+\end{question}
+
+\begin{question}
+Can you think of a metric space that isn't a Euclidean space?  Feel free to use the web as a resource.  Make sure to explain your answer.
+\end{question}
+
+\begin{question}
+How practical is Arora's algorithm?  You may find it useful to check out the following websites which are devoted to solving \TSP:\\
+\url{http://www.research.att.com/~dsj/ctsp/}\\
+\url{http://www.tsp.gatech.edu/}\\
+As well as the book:\\
+{\em The Traveling Salesman Problem: A Computational Study by Applegate, Bixby, Chvatal, and Cook} \\
+which is on reserve in Schow.
+\end{question}
+
+\begin{question}
+Provide a short review of Arora's TSP article.  What parts of the article did you enjoy the most?  What parts did you least enjoy?  
+\end{question}
+
+\begin{problem}
+Give a formal proof of my claim in Section~\ref{sec:tsp} that general TSP has no good approximation algorithm.  In other words, show that, for any positive function $f(n)$, there is no $f(n)$-approximation for TSP where $n$ is the number of nodes.
+\end{problem}
+
+\begin{problem}
+Show that the analysis of Christofides' algorithm is tight.  In other words, describe a class of instances where Christofides' algorithm returns a solution that is exactly a factor of 3/2 larger than optimal.
+\end{problem}
+
+\section{Theory versus Practice}
+
+\begin{problem}
+This problem asks you to empirically evaluate the 2-approximation for the TSP.  You will also compare the 2-approximation against an algorithm that you develop.
+\begin{itemize}
+	\item Begin by implementing the 2-approximation described in Section~\ref{sec:metric} using a language of your choice.  If you choose Java, then you might find the {\tt JGraphT} library useful.  If you use C++, then check out the Boost graph library.  Both libraries provide flexible graph representations along with algorithms for finding minimum spanning trees.
+	\item Test your 2-approximation on at least 5 different instances of the traveling salesperson problem taken from the {\em symmetric traveling salesman problem} section of TSPLIB.  The TSPLIB is available online at: \url{http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/}.  All of the symmetric TSP instances have been solved, so you can truly compare the solution returned by the 2-approximation with the optimal solution.
+	\item With your partner, develop your own polynomial-time heuristic algorithm for TSP.  Borrow elements from Arora, Christofides, or any other algorithm that you read about.  Can you beat the 2-approximation on the instances you tested against above?  Make sure to describe your algorithm in prose and be prepared to give a high-level description of it during our tutorial session.  Make sure to have fun.
+\end{itemize}
+\end{problem}
+
+\end{document}

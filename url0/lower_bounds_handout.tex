@@ -1,0 +1,109 @@
+\documentclass[11pt]{article}
+
+\usepackage{times,graphicx,epstopdf,fancyhdr,amsfonts,amsthm,amsmath,algorithm,algorithmic,xspace,hyperref}
+\usepackage[left=.75in,top=.75in,right=.75in,bottom=.75in]{geometry}
+
+\textwidth 7in
+\textheight 9.5in
+\setlength\parindent{0pt}
+
+\pdfpagewidth 8.5in
+\pdfpageheight 11in 
+
+\pagestyle{fancy}
+
+\lhead{CS 356T}
+\rhead{Fall 2019}
+\chead{Lower Bounds}
+\cfoot{\thepage}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\newtheorem{claim}{Claim}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{observation}{Observation}
+\newtheorem{question}{Question}
+\newtheorem{problem}{Problem}
+\newtheorem{note}{Note}
+
+\begin{document}
+
+Take a moment before reading to recall the following notation: $O(f(n)), o(f(n)), \Omega(f(n)), \Theta(f(n))$.
+You can find definitions in any good algorithms text (such as {\it Algorithm Design} by Kleinberg and Tardos) or pithily defined on the very useful
+\href{resources/Theory_Cheat_Sheet.pdf}{Theory Cheat Sheet }
+
+\section{Introduction: Lower Bounds for {\it Problems}, not only for {\it Algorithms}}
+By now you've seen many arguments that provide upper bounds on the running times (or space usage) of algorithms. But how do you know whether an algorithm is optimal: that is, how do you know whether or not there might be some other algorithm that performs asymptotically better?  To answer such a question, it would seem that we need to be able to say something about the {\em inherent difficulty of the problem $X$} that the algorithm solves.  Something of the form: "{\em Any} algorithm that solves problem $X$ takes (in the worst case---or perhaps on average) at least $\Omega(f(n))$ time".
+That sounds hard. [Spoiler alert: It is.]
+
+The good news is that in certain cases it can be done and the methods used---as well as the results themselves---are worth learning something about.  That's the goal for this week.
+
+\section{How Can We Reason About {\em All} Algorithms That Solve $X$?!}
+Ok, we probably can't.  But we {\em can} reason about families of algorithms that solve $X$. Said differently, we can specify a {\em model of computation} and then argue about how long any algorithm consistent with that model might take to solve problem $X$.  We'll look at the following models
+\begin{description}
+\item[Comparison-based:] The only operations on data are comparisons.
+\item[Decision Tree:]  We model the algorithm base on its conditional statements.  Of particular note are
+\begin{itemize}
+\item Linear Decision Tree
+\item Algebraic Decision Tree
+\end{itemize}
+\item[Algebraic Computation Tree]
+\end{description}
+
+As we explore these models, we'll use certain kinds of arguments, including
+\begin{itemize}
+\item Adversary (oracle) arguments
+\item Topological arguments
+\item Problem reduction arguments
+\end{itemize}
+
+\section{Game Plan}
+Unlike most of the weekly assignments, this one has readings that are not too demanding (unless you get to the optional
+final reading by Lubiw). The bulk of the work will be in solving the problems.  So for this week, I'd like you and your partner
+to share in the presentation of problem solutions.
+
+\begin{enumerate}
+\item Read Blum's notes (Lecture 5) on comparison-based sorting
+\item Read Erickson's notes (Lecture 28) on lower bounds
+\item Problem: Find a lower bound for number of compares required to merge two sorted lists.
+\item Problem: Find a lower bound for number of compares to determine whether $y$ is in array $x[]$.
+\begin{note} Be more specific: Are items comparable?\end{note}
+\item Problem: Do Problem 2 from Erickson's Lecture 28
+\begin{note} Add hint for part (a)? $k^{th}$ smallest element can be found in $\theta(n)$ time.\end{note}
+\item Read Blum's notes (Lecture 6) on concrete lower and upper bounds
+\item Problem: Find a lower bound for number of compares needed to determine the median of a list of $n$ integers.
+\begin{note} Aim for $n-1$. Challenge: $(3n-3)/2$. \end{note}
+\item Problem: Find a lower bound for number of compares to find both the max and min elements.
+\begin{note} Aim for $(3n-4)/2$. \end{note}
+\item Problem You are given 12 balls and a two-pan balance scale (it you're too young to know what this is, Google it!).
+Of the 12 balls,11 have same weight, one has a different weight. Figure out which ball has the different weight with as few weighings as possible and whether its weight is lower or higher than that of the other 11 balls.
+\item Read Erickson's notes (Lecture 29) on adversary arguments and evasive graph properties.\footnote{Pages 5-6 are intentionally missing!}
+\item Problem: Do Problem 2 from Erickson's Lecture 29
+\item Problem: Do Problem 4 from Erickson's Lecture 29
+\item Often one can prove a lower bound for a particular problem via {\em problem reduction}, the same technique
+that one uses to show that problems are NP-complete.  The next problem asks you to use this technique.
+\item Problem: Given a set $X$ of $n$ points in the plane, the {\em convex hull of $X$} is defined to be the
+smallest polygon containing $X$.  The {\em Convex Hull Problem} is that of, given $X$, producing a description of
+this polygon as a list of vertices in counter-clockwise order.
+Prove that any comparison-based
+\footnote{Here "comparison-based" means that the only operations allowed on the points are those that ask
+whether a point is to the left of, on, or to the right of, a line determined by two of the other points.}
+algorithm for computing the convex hull
+of $n$ points must take time $\Omega(n \log n)$ by showing that the problem of sorting $n$ integers
+can be reduced to the Convex Hull Problem.  For bonus points
+\footnote{I'm not sure what that even means.}, design an $O(n \log n)$ algorithm for computing the
+convex hull of $X$.
+\item Because the first week is short, I'm not requiring this last item but if you have time you really should at least
+scan Lubiw's paper: {\em A Lower Bound for the Integer Element Distinctness Problem}. If you do get a chance,
+I'd love to hear what you thought of it.
+\end{enumerate}
+
+\section{What to Present}
+This week, student A should present the most interesting\footnote{Here "interesting" can refer to both aspects of the problems you successfully solved as well as obstacles
+to any that you did not.}
+aspects of the problems assigned.
+Student B will give an overview of the key\footnote{Similarly, "key" may refer to important points that you mastered
+as well as ones that you did not.}
+ideas from the assigned readings.
+\end{document}

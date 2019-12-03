@@ -1,0 +1,88 @@
+\documentclass[11pt]{article}
+
+\usepackage{times,graphicx,epstopdf,fancyhdr,amsfonts,amsthm,amsmath,url,xspace}
+\usepackage[left=.75in,top=.75in,right=.75in,bottom=.75in]{geometry}
+
+\usepackage[numbers]{natbib}
+
+\textwidth 7in
+\textheight 9.5in
+
+\pagestyle{fancy}
+
+\lhead{CS 356T}
+\rhead{Fall 2019}
+\chead{Week 7: Matroids and Matroid Intersection}
+\cfoot{\thepage}
+\renewcommand{\footrulewidth}{0.4pt}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{question}{Question}
+\newtheorem{problem}{Problem}
+\newtheorem{remark}{Remark}
+\newtheorem{reading}{Reading}
+
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\TSP}{{\sc Tsp}\xspace}
+
+\begin{document}
+
+\section{Matroids} \label{sec:matroids}
+
+Many problems for which greedy algorithms produce optimal solutions share a similar underlying combinatorial structure.  Matroids capture this structure.  Formally, matroids are {\em set systems} that exhibit the {\em exchange property}.  A set system is a pair $(S, \mathcal{I})$ where
+
+\begin{itemize}
+	\item $S$ is a finite set, often called the {\em ground set}, and
+	\item $\mathcal{I}$ is a {\em nonempty}, {\em hereditary} collection of subsets of $S$.  A collection $\mathcal{I}$ is hereditary if, for every $A \in \mathcal{I}$ and $B \subseteq A$, we have that $B \in \mathcal{I}$ (that is, $\mathcal{I}$ is closed under taking subsets).  We call the sets in $\mathcal{I}$ {\em independent sets}.  Note that the empty set is necessarily a member of $\mathcal{I}$.
+\end{itemize}
+
+A set system $(S, \mathcal{I})$ exhibits the {\em exchange property} when, if $X$ and $Y$ are two sets in $\mathcal{I}$ and $|X| > |Y|$ there exists an element $x \in X \setminus Y$ such $Y \cup \{x\}$ is also in $\mathcal{I}$.  Much of this terminology is borrowed from linear algebra and matrix theory where the rows of a matrix form the ground set and a set of rows form an independent set precisely when they are {\em linearly independent} as vectors:
+non-zero vectors $v_1, v_2, \ldots, v_n$ are linearly independent if and only if every non-zero linear combination of the
+vectors is a non-zero vector.  That is,
+\[\sum_{i=1}^n c_i v_i = 0 \implies c_i = 0 \mbox{ for all } i = 1, \ldots, n. \]
+
+\section{Readings}
+The goals for this week are to learn how the concept of a greedy algorithm can be formalized and reasoned about, to
+begin to understand the range of problems to which the greedy method can be successfully applied, and to get a sense for how the concept can be extended to problems which do not initially seem to be amenable to the greedy approach.
+
+Start by reading Jeff Ericksson's introductory notes on matroids.  These notes are linked on the course website.  This will give you a sense of the topic. Then read Sections 4.1 - 4.3 of Michel Goemans' Lecture Notes on Matroid Optimization (you might try your hand at a few of the problems in Section 4.1 to test your understanding). These notes highlight an interesting quality of matroids: they can be defined in multiple related but different ways, each of which reveals different features of matroid structure.
+Next, read Michel Goemans' lecture notes on matroid intersection, skipping sections 5.3 and 5.4 if you like.  Finally, skim Nick Harvey's paper on algebraic methods for matching and matroid problems.
+
+\section{Problems and Presentation}
+
+\begin{question}
+Do you think Harvey's algorithms for matroid intersection and matching are practical?  In other words, is there any incentive to code them up?
+\end{question}
+
+\noindent {\bf Problems 1-6}. Erickssons notes end with six exercises which are the first six problems of this week's assignment.\\
+
+\noindent {\bf Problem 7 [Adler]}.  {\em For many optimization problems of the generic form based on matroids, there can be multiple solutions that achieve the optimal value.
+	\begin{itemize} 
+		\item [(a)]  Prove that for any matroid $(S, \mathcal{I})$ if the elements of $S$ are assigned distinct weights then the maximum weight subset in $\mathcal{I}$ is unique.
+		\item [(b)]  Now consider an assignment of weights such that there is more than one subset in $\mathcal{I}$ that achieves the maximum weight. From part (a), we know that such an assignment must have weights that are not distinct. Thus, when we sort the elements of $S$ by non-increasing weight at the start of the greedy algorithm, there are multiple sorted orders that can result, depending on how we break ties. In fact, how we break ties can effect which of the optimal solutions the greedy algorithm returns.  Prove that for every subset $X \in \mathcal{I}$ that achieves the maximum weight, there is some way to break ties between elements of E with the same weight, such that the greedy algorithm returns the solution $X$.
+	\end{itemize}}
+
+\noindent {\bf Problem 8 [CLRS 16.4-6]}.  {\em Show how to transform the weight function of a weighted matroid problem, where the desired optimal solution is a {\em minimum weight} maximal independent subset, to make it a standard weighted-matroid problem.  Argue carefully that your transformation is correct.}\\
+
+\noindent {\bf Problem 9 [CLRS 16.4-3 $\star$]}.  {\em Show that if $(S, \mathcal{I})$ is a matroid then $(S, \mathcal{I}')$ is a matroid where
+\[
+\mathcal{I}' = \{A' \,|\, S \setminus A' \mbox{ contains some maximal $A \in \mathcal{I}$}\}.
+\]
+}
+
+In addition to presenting the most interesting highlights of the problems above, be prepared to present an overview of the fundamental matroid concepts developed in the notes, and either (a) describe the essential elements of the Matroid Intersection Theorem along with a sample application, or (b) present an overview of the results of Harvey's paper, including some of the technical details.
+
+%% A bibliography is required.
+\bibliographystyle{plainnat}
+\bibliography{/Users/heeringa/Documents/moab}
+
+\end{document}

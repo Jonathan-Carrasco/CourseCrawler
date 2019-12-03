@@ -1,0 +1,91 @@
+\documentclass[11pt]{article}
+
+\usepackage{times,graphicx,epstopdf,fancyhdr,amsfonts,amsthm,amsmath,url}
+\usepackage[left=.75in,top=.75in,right=.75in,bottom=.75in]{geometry}
+
+\textwidth 7in
+\textheight 9.5in
+
+\pagestyle{fancy}
+
+\lhead{CS 356T}
+\rhead{Fall 2019}
+\chead{Week 6: (fully) polynomial time approximation schemes}
+\cfoot{\thepage}
+\renewcommand{\footrulewidth}{0.4pt}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{question}{Question}
+\newtheorem{problem}{Problem}
+\newtheorem{remark}{Remark}
+\newtheorem{reading}{Reading}
+
+\newcommand{\U}{\mathcal{U}}
+
+\begin{document}
+
+\section{Approximation Schemes}
+
+Last week we studied linear programming as a tool for finding good approximation algorithms.  Namely, we formulated our NP-hard problems as integer programs, relaxed them to linear programs, and used the optimal solution to the linear program as a lower bound on the optimal solution to the integer program.  For {\sc Vertex Cover} we saw how to deterministically round a fractional solution to yield a 2-approximation for the general problem.  After this we saw how to use {\em randomized rounding} to give a $O(\log n)$-approximation for {\sc Set Cover}.  Both of these approximation factors are close to, or essentially tight, modulo $P=NP$.  That is, finding a better approximation is NP-hard.
+
+This week we will study problems which afford {\em arbitrarily close} approximations.  What does this mean?  Given some minimization problem instance $\mathcal{I}$ and some small value $\epsilon$, we are interested in finding a solution to $\mathcal{I}$ that is within $(1+\epsilon)$ of $OPT(\mathcal{I})$.  We call procedures of this sort {\em approximation scheme}.  Of course, the quality of the solution often trades with the running time of our algorithm.  Given a problem of size $n$ and an $\epsilon > 0$, we say that an approximation scheme is {\em fully polynomial-time} when it returns a solution that is within a factor of $(1+\epsilon)$ of optimal in time polynomial in $n$ and $1\epsilon$.  We say that an approximation scheme is simply {\em polynomial-time} when approximation factor remains at $(1+\epsilon)$ but the running time is only polynomial in $n$; in other words, it may be exponential (or worse) in $1\epsilon$.
+
+\begin{reading}
+Begin by reading Mark de Berg's lecture notes on approximation schemes.  These notes are available on the website.
+\end{reading}
+
+\begin{question}
+Why do problems like {\sc Vertex Cover}, {\sc Set Cover}, and {\sc Graph Coloring} not have {\em fully} polynomial time approximation schemes?
+\end{question}
+
+\begin{question}
+What is the salient characteristic of problems like {\sc Knapsack} and {\sc Subset Sum} that allows them to have {\em fully} polynomial time approximation schemes?
+\end{question}
+
+\begin{problem}
+Implement the fully polynomial time approximation scheme for the {\sc Knapsack} problem in a language of your choice.  Your program should accept input from {\tt stdin} having the following form:
+{\tt
+\begin{verbatim}
+epsilon
+W
+n
+w1 p1
+w2 p2
+.
+.
+.
+wn pn
+
+\end{verbatim}
+}
+where {\tt epsilon} gives the approximation quality (i.e. a real number), $n$ denotes the number of items in the initial set, $W$ denotes the total weight of the sack, $w_{i}$ denotes the weight of item $i$, and $p_{i}$ denotes the profit of item $i$.  Your output should be a set of items, the total weight of the items, and the total profit.  Perform the following experiment to empirically verify the correctness of your implementation:
+\begin{enumerate}
+	\item Generate a set of 100 random integers in the range $[0,2^{16}-1]$.  Select 50 of these numbers uniformly at random.  Let $W$ be their total weight and $P$ be their total profit.  Let the 100 numbers plus $W$ be your instance.  Note that there may be a completely different set of elements with weight at most $W$ and profit larger than $P$.  However, in this case, $P$ serves as a lower bound on the optimal solution.
+	\item Run your FTPAS on your instance with varying values of $\epsilon$.  Record the cost of the solution.  
+	\item Since you have a lower bound on $OPT$ which in this case is $P$, you can determine the approximation ratio of your solution with $P$.  Plot this ratio.  Also plot $(1-\epsilon)$ which should be a lower bound on your approximation ratio.  Your plots should use the $x$-axis for the varying (say, decreasing) values of $\epsilon$ and the $y$-axis for the approximation ratio.
+	\item If you have time, try running the exact dynamic programming algorithm on your instances to determine the true optimum.  Your FPTAS solution should still be within a factor of $(1-\epsilon)$ of this value too.
+\end{enumerate}
+\end{problem}
+
+\begin{problem}
+Consider the non-negative sets of integers $A=\{a_{1}, \ldots, a_{n}\}$ and $B=\{b_{1}, \ldots, b_{n}\}$, and a non-negative integer $C$.  For a subset $K \subseteq \{1, \ldots, n\}$, denote $A_{K}=\sum_{j \in K} a_{j}$ and $B_{K} = \sum_{j \in K} b_{j}$.  The goal is to find an index set $K$ with $A_{K} + B_{K} \leq C$ such that $A_{K}^{2} + B_{K}^{2}$ is maximized.  Design an FPTAS for this problem. 
+\end{problem}
+
+\begin{reading}
+Read {\em Huffman Coding with Unequal Letter Costs} by Golin, Kenyon (Mathieu), and Young.  The paper appeared at STOC 2002 and is available on the course website.  The Huffman coding problem is a classic:  Given an alphabet with $n$ characters $A=\{a_{1}, \ldots, a_{n}\}$ and associated frequencies $w_{1}, \ldots, w_{n}$, develop a binary prefix-free code for $A$ that has minimum expected codeword length.  The general version assumes that the code can be $k$-ary instead of binary and that each encoding symbol $\alpha_{j}$ (often called a {\em letter}) has a length $l_{j}$.  The complexity of this problem remains open!
+\end{reading}
+
+\begin{question}
+Write a short review of the Golin et al. paper.  What algorithmic ideas did they employ that were similar to the FTPAS for the {\sc Knapsack} problem?  What algorithmic techniques were different?
+\end{question}
+
+\end{document}
