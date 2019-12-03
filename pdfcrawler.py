@@ -1,8 +1,7 @@
+from bs4 import BeautifulSoup
 import os
-import sys
 import requests
 from urllib.parse import urljoin
-from bs4 import BeautifulSoup
 
 def getDocsFromURL(url, dir, tex_files):
     r = requests.get(url)
